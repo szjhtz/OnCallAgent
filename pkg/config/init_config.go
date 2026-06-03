@@ -14,6 +14,7 @@ type Config struct {
 	Qdrant     QdrantConfig     `mapstructure:"qdrant"`
 	OpenAI     OpenAIConfig     `mapstructure:"openai"`
 	Prometheus PrometheusConfig `mapstructure:"prometheus"`
+	CLSMcp     CLSMcpConfig     `mapstructure:"cls_mcp"`
 }
 
 // ServerConfig 服务器配置
@@ -47,6 +48,14 @@ type OpenAIConfig struct {
 // PrometheusConfig Prometheus 配置
 type PrometheusConfig struct {
 	URL string `mapstructure:"url"`
+}
+
+// CLSMcpConfig 腾讯云日志服务 CLS MCP 配置
+type CLSMcpConfig struct {
+	// BaseURL CLS MCP Server 的 SSE 接入地址，例如 http://localhost:3100/sse
+	BaseURL string `mapstructure:"base_url"`
+	// Enabled 是否启用 CLS 日志 MCP 工具
+	Enabled bool `mapstructure:"enabled"`
 }
 
 // InitConfig 从配置文件初始化配置
@@ -104,6 +113,10 @@ func setDefaults(v *viper.Viper) {
 
 	// Prometheus 默认值
 	v.SetDefault("prometheus.url", "http://localhost:9090")
+
+	// CLS MCP 默认值
+	v.SetDefault("cls_mcp.base_url", "http://localhost:3100/sse")
+	v.SetDefault("cls_mcp.enabled", true)
 }
 
 // GetServerAddr 获取服务器完整地址
@@ -127,4 +140,12 @@ func (c *Config) GetPrometheusURL() string {
 		return "http://localhost:9090"
 	}
 	return c.Prometheus.URL
+}
+
+// GetCLSMcpURL 获取 CLS 日志 MCP Server 的 SSE 接入地址
+func (c *Config) GetCLSMcpURL() string {
+	if c.CLSMcp.BaseURL == "" {
+		return "http://localhost:3100/sse"
+	}
+	return c.CLSMcp.BaseURL
 }
