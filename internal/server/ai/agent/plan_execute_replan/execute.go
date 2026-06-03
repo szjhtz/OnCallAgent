@@ -35,6 +35,14 @@ func NewExecuteAgent(ctx context.Context, model *openai.ChatModel, cfg *config.C
 		return nil, err
 	}
 	toolls = append(toolls, promethesTool)
+	// 接入腾讯云日志服务 CLS MCP，拉取其暴露的全部日志查询工具
+	if cfg.CLSMcp.Enabled {
+		logMcpTools, err := tools.GetLogMcpTool(ctx, cfg.GetCLSMcpURL())
+		if err != nil {
+			return nil, err
+		}
+		toolls = append(toolls, logMcpTools...)
+	}
 	return planexecute.NewExecutor(ctx, &planexecute.ExecutorConfig{
 		Model: model,
 		ToolsConfig: adk.ToolsConfig{

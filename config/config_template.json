@@ -19,10 +19,11 @@
     "model": "minimax/minimax-m2.1",
     "api_base": "https://api.qnaigc.com/v1"
   },
-  "tecentmcp": {
-    "cls-mcp-server": {
-      "type": "sse",
-      "url": "https://mcp-api.tencent-cloud.com/sse/xxxxxx"
-    }
+  "prometheus": {
+    "url": "http://localhost:9090"
+  },
+  "cls_mcp": {
+    "base_url": "http://localhost:3100/sse",
+    "enabled": true
   }
 }
