@@ -22,11 +22,13 @@ func NewPlanHandler(planServer planserver.PlanServer) Plan {
 
 func (p *plan) Plan() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		msg, msgs, error := p.planServer.Plan(ctx.Request.Context())
-		if error != nil {
-			ctx.JSON(400, gin.H{
+		msg, msgs, err := p.planServer.Plan(ctx.Request.Context())
+		if err != nil {
+			ctx.JSON(500, gin.H{
 				"message": "获取运维信息错误",
+				"error":   err.Error(),
 			})
+			return
 		}
 		ctx.JSON(200, gin.H{
 			"message": "获取运维信息成功",
